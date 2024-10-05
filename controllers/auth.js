@@ -25,14 +25,14 @@ const register = async (req, res) => {
     // save the new user to the database
     const savedUser = await newUser.save();
 
-    //login immediately you register, send info to the cookie
-    const aboutUser = {
-      id: newUser.id,
-      email: newUser.email,
-    };
+    // //login immediately you register, send info to the cookie
+    // const aboutUser = {
+    //   id: newUser.id,
+    //   email: newUser.email,
+    // };
 
-    const token = jwt.sign(aboutUser, process.env.JWT_SECRET);
-    res.cookie("user_token", token);
+    // const token = jwt.sign(aboutUser, process.env.JWT_SECRET);
+    // res.cookie("user_token", token);
 
     // Send a success response with the saved user data
     res.status(200).json({
@@ -65,6 +65,7 @@ const login = async (req, res) => {
     const aboutUser = {
       id: userInfo.id,
       email: userInfo.email,
+      role: userInfo.role,
     };
 
     const token = jwt.sign(aboutUser, process.env.JWT_SECRET);

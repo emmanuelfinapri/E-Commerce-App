@@ -33,4 +33,35 @@ const loginVerify = (req, res, next) => {
   });
 };
 
-module.exports = { logoutVerify, loginVerify };
+const adminAndSuperAdminVerify = (req, res, next) => {
+  const { role } = req.user;
+
+  if (role !== "Admin" && role !== "SuperAdmin") {
+    return res.json({
+      message:
+        "you are not an Admin or Super Admin so you can't make changes to the products",
+    });
+  }
+
+  next();
+};
+
+const superAdminVerify = (req, res, next) => {
+  const { role } = req.user;
+
+  if (role !== "SuperAdmin") {
+    return res.json({
+      message:
+        "you are not a Super Admin so you don't have Super Admin Previleges",
+    });
+  }
+
+  next();
+};
+
+module.exports = {
+  logoutVerify,
+  loginVerify,
+  adminAndSuperAdminVerify,
+  superAdminVerify,
+};

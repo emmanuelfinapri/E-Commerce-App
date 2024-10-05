@@ -21,6 +21,15 @@ const userSchema = new mongoose.Schema(
       enum: ["Basic", "Admin", "SuperAdmin"],
       default: "Basic",
     },
+    productsAvailable: {
+      type: [String],
+      default: [],
+    },
+    // cart: {
+    //   type: [mongoose.Types.ObjectId],
+    //   default: [],
+    //   ref: "Product",
+    // },
   },
   { timestamps: true }
 );
