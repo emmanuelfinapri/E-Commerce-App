@@ -25,11 +25,13 @@ const userSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
-    // cart: {
-    //   type: [mongoose.Types.ObjectId],
-    //   default: [],
-    //   ref: "Product",
-    // },
+    cart: {
+      type: [String],
+      default: [],
+    },
+    totalCostInCart: {
+      type: Number,
+    },
   },
   { timestamps: true }
 );

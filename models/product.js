@@ -1,4 +1,3 @@
-const { timeStamp } = require("console");
 const mongoose = require("mongoose");
 
 // Define the schema for products

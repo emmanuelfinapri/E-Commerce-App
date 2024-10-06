@@ -131,7 +131,7 @@ const viewAllProducts = async (req, res) => {
   try {
     const allProducts = await productModel
       .find()
-      .select("-_id productName productDesc productPrice productStatus");
+      .select("-_id   productName productDesc productPrice productStatus");
     if (allProducts.length === 0) {
       return res.status(400).json({
         message: `No product exists in the Database`,

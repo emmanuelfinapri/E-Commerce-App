@@ -8,6 +8,7 @@ const cookieparser = require("cookie-parser");
 const authRoute = require("./routes/auth");
 const userRoute = require("./routes/user");
 const productRoute = require("./routes/product");
+const cartRoute = require("./routes/cart");
 dotenv.config();
 
 // connect to MongoDB
@@ -26,6 +27,7 @@ app.use(cookieparser());
 app.use(authRoute);
 app.use(userRoute);
 app.use(productRoute);
+app.use(cartRoute);
 
 app.listen(PORT, () => {
   console.log(`E-commerce App running on Port: ${PORT}`);
