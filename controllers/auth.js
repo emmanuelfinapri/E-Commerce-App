@@ -25,22 +25,13 @@ const register = async (req, res) => {
     // save the new user to the database
     const savedUser = await newUser.save();
 
-    // //login immediately you register, send info to the cookie
-    // const aboutUser = {
-    //   id: newUser.id,
-    //   email: newUser.email,
-    // };
-
-    // const token = jwt.sign(aboutUser, process.env.JWT_SECRET);
-    // res.cookie("user_token", token);
-
     // Send a success response with the saved user data
     res.status(200).json({
       message: "Account created successfully",
       user: savedUser,
     });
   } catch (error) {
-    console.error(error);
+    console.log(error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -66,6 +57,7 @@ const login = async (req, res) => {
       id: userInfo.id,
       email: userInfo.email,
       role: userInfo.role,
+      password: userInfo.password,
     };
 
     const token = jwt.sign(aboutUser, process.env.JWT_SECRET);
@@ -76,7 +68,7 @@ const login = async (req, res) => {
       message: `Welcome ${userInfo.email} you are now logged in`,
     });
   } catch (error) {
-    console.error(error);
+    console.log(error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -89,7 +81,7 @@ const logout = async (req, res) => {
       .status(201)
       .json({ message: `Logged out ${email} successfully` });
   } catch (error) {
-    console.error(error);
+    console.log(error);
     res.status(500).json({ message: error.message });
   }
 };

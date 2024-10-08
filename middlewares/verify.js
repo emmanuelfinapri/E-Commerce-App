@@ -35,7 +35,7 @@ const loginVerify = (req, res, next) => {
 
 const adminAndSuperAdminVerify = (req, res, next) => {
   const { role } = req.user;
-  console.log(role);
+
   if (role !== "Admin" && role !== "SuperAdmin") {
     return res.json({
       message:

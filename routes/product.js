@@ -5,6 +5,7 @@ const {
   updateProduct,
   deleteAllProducts,
   viewAllProducts,
+  viewProductsByCategory,
 } = require("../controllers/product");
 const {
   loginVerify,
@@ -32,5 +33,6 @@ routes.delete(
   deleteAllProducts
 );
 routes.get("/view-all-products", viewAllProducts);
+routes.get("/view-products-by-category", viewProductsByCategory);
 
 module.exports = routes;

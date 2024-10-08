@@ -3,7 +3,7 @@ const userModel = require("../models/user");
 
 const addProduct = async (req, res) => {
   try {
-    const { productName, productPrice, productDesc } = req.body;
+    const { productName, productPrice, productDesc, category } = req.body;
     const theProduct = await productModel.findOne({ productName });
 
     if (theProduct) {
@@ -16,6 +16,7 @@ const addProduct = async (req, res) => {
       productName,
       productPrice,
       productDesc,
+      category,
     });
     // Save the new product to the database
     await newProduct.save();
@@ -63,7 +64,8 @@ const deleteProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
   try {
-    const { productName, productDesc, productPrice, productStatus } = req.body;
+    const { productName, productDesc, productPrice, productStatus, category } =
+      req.body;
     const theProduct = await productModel.findOne({ productName });
     if (!theProduct) {
       return res.status(400).json({
@@ -88,7 +90,7 @@ const updateProduct = async (req, res) => {
     }
     await productModel.findOneAndUpdate(
       { productName },
-      { productDesc, productPrice, productStatus },
+      { productDesc, productPrice, productStatus, category },
       { new: true, runValidators: true }
     );
     return res.status(200).json({
@@ -118,7 +120,6 @@ const deleteAllProducts = async (req, res) => {
 
       return res.status(200).json({
         message: `All ${deletedProducts.deletedCount} products have been deleted successfully`,
-        deletedCount: deletedProducts.deletedCount, // Optional: gives the count of deleted documents
       });
     }
   } catch (error) {
@@ -145,10 +146,40 @@ const viewAllProducts = async (req, res) => {
   }
 };
 
+const viewProductsByCategory = async (req, res) => {
+  try {
+    const { category } = req.query;
+
+    if (!category) {
+      return res.status(400).json({
+        message: `Category is required`,
+      });
+    }
+
+    const allProductsByCategory = await productModel
+      .find({ category })
+      .select(
+        "-_id   productName productDesc productPrice productStatus category"
+      );
+
+    if (!allProductsByCategory) {
+      return res.status(400).json({
+        message: `This ${category} category does not exist`,
+      });
+    }
+    // Send a response with all products
+    res.json(allProductsByCategory);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   addProduct,
   deleteProduct,
   updateProduct,
   deleteAllProducts,
   viewAllProducts,
+  viewProductsByCategory,
 };

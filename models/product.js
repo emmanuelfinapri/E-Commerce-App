@@ -25,6 +25,10 @@ const productSchema = new mongoose.Schema(
       enum: ["Available", "Out of stock", "Discontinued"],
       default: "Available",
     },
+    category: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true }
 );

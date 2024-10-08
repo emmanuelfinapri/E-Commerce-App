@@ -84,8 +84,10 @@ const removeFromCart = async (req, res) => {
     let userCart = await cartModel.findOne({ owner: email });
 
     if (userCart) {
-      if (userCart.itemsInCart.includes(item)) {
-        userCart.itemsInCart.pull(item);
+      const itemIndex = userCart.itemsInCart.indexOf(item);
+      if (itemIndex !== -1) {
+        // Remove only the first occurrence of the item
+        userCart.itemsInCart.splice(itemIndex, 1);
         userCart.totalCost -= productItem.productPrice;
         // Save the changes to the database
         await userCart.save();
