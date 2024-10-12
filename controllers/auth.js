@@ -2,10 +2,12 @@ const userModel = require("../models/user");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
+// Function to handle user registration
 const register = async (req, res) => {
   try {
     const { password, email, ...others } = req.body;
 
+    // Check if the user already exists in the database
     const userInfo = await userModel.findOne({ email });
     if (userInfo) {
       return res
@@ -13,16 +15,17 @@ const register = async (req, res) => {
         .json({ message: `Sorry ${email} is already taken, find a new one` });
     }
 
+    // Hash the password before saving the user
     const hashedPassword = bcrypt.hashSync(password, 10);
 
-    // Create a new user instance with hashed password
+    // Create a new user instance with hashed password and other data
     const newUser = new userModel({
       email,
       password: hashedPassword,
       ...others,
     });
 
-    // save the new user to the database
+    // Save the new user to the database
     const savedUser = await newUser.save();
 
     // Send a success response with the saved user data
@@ -31,28 +34,32 @@ const register = async (req, res) => {
       user: savedUser,
     });
   } catch (error) {
+    // Log the error and send a 500 status response if something goes wrong
     console.log(error);
     res.status(500).json({ message: error.message });
   }
 };
 
+// Function to handle user login
 const login = async (req, res) => {
   try {
     const { password, email } = req.body;
+
     // Check if the user exists in the database
     const userInfo = await userModel.findOne({ email });
     if (!userInfo) {
       return res
         .status(400)
-        .json({ message: "user not found, register your account" });
+        .json({ message: "User not found, register your account" });
     }
 
-    // Verify the provided password with the stored hashed password
+    // Compare the provided password with the hashed password in the database
     const verify = bcrypt.compareSync(password, userInfo.password);
     if (!verify) {
       return res.status(400).json({ message: "Password does not match" });
     }
 
+    // Create a JWT token with user details
     const aboutUser = {
       id: userInfo.id,
       email: userInfo.email,
@@ -60,30 +67,36 @@ const login = async (req, res) => {
       password: userInfo.password,
     };
 
+    // Sign the token using a secret and store it in a cookie
     const token = jwt.sign(aboutUser, process.env.JWT_SECRET);
     res.cookie("user_token", token);
 
-    // Send a success response with the saved user data
+    // Send a success response
     res.status(200).json({
-      message: `Welcome ${userInfo.email} you are now logged in`,
+      message: `Welcome ${userInfo.email}, you are now logged in`,
     });
   } catch (error) {
+    // Log the error and send a 500 status response if something goes wrong
     console.log(error);
     res.status(500).json({ message: error.message });
   }
 };
 
+// Function to handle user logout
 const logout = async (req, res) => {
   const { email } = req.user;
   try {
+    // Clear the user token from the cookies and send a success response
     res
       .clearCookie("user_token")
       .status(201)
       .json({ message: `Logged out ${email} successfully` });
   } catch (error) {
+    // Log the error and send a 500 status response if something goes wrong
     console.log(error);
     res.status(500).json({ message: error.message });
   }
 };
 
+// Export the register, login, and logout functions
 module.exports = { register, login, logout };
